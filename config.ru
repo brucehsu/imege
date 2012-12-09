@@ -3,7 +3,6 @@ require 'rack'
 require 'json'
 require 'digest'
 require 'jellyfish'
-require 'pry'
 require 'db'
 
 class Tank
