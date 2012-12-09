@@ -13,6 +13,17 @@ class Tank
 	@@img_content_type = {'.jpg'=>'image/jpeg', '.png'=>'image/png'}
 	@@img_content_suffix = @@img_content_type.invert
 
+	get %r{\/img\/(.+)$} do |match|
+		filename = match[1]
+		unless File.exists? filename
+			status 404 
+			'Not found'
+		else
+			headers 'Content-Type'=>@@img_content_type[File.extname(filename)]
+			File.read(filename)
+		end
+	end
+
 	put '/upload' do
 		upload_file = request.params['file']
 		client_token = request.params['token']
