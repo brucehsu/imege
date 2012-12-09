@@ -13,7 +13,7 @@ class Tank
 	@@img_content_suffix = @@img_content_type.invert
 
 	get %r{\/img\/(.+)$} do |match|
-		filename = match[1]
+		filename = match[0]
 		unless File.exists? filename
 			status 404 
 			'Not found'
@@ -38,7 +38,8 @@ class Tank
 		'Error' unless valid_secret == client_secret
 		digest = Digest::SHA2.new
 
-		filename = "#{digest.update(Time.now.to_i.to_s)}#{@@img_content_suffix[upload_file[:type]]}"
+		filename = "img/#{digest.update(Time.now.to_i.to_s)}#{@@img_content_suffix[upload_file[:type]]}"
+		Dir.mkdir 'img' unless Dir.exists? 'img'
 		output = File.new(filename,'w')
 		output.write(upload_file[:tempfile].read)
 		output.flush
