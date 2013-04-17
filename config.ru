@@ -13,6 +13,7 @@ class Tank
 	@@img_content_suffix = @@img_content_type.invert
 
 	get %r{\/img\/(.+)$} do |match|
+
 		filename = match[0][1..-1]
 		unless File.exists? filename
 			status 404 
@@ -51,4 +52,7 @@ end
 
 use Rack::ContentLength
 use Rack::ContentType, 'application/json'
+use Rack::Chunked
+use Rack::ConditionalGet
+use Rack::ETag
 run Tank.new
