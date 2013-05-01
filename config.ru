@@ -1,7 +1,7 @@
 $LOAD_PATH << '.'
-require 'rack'
 require 'json'
 require 'digest'
+require 'rack'
 require 'jellyfish'
 require 'db'
 
@@ -22,6 +22,25 @@ class Tank
 			headers 'Content-Type'=>@@img_content_type[File.extname(filename)]
 			File.read(filename)
 		end
+	end
+
+	post '/register' do
+		token = request.params['token']
+		digest = request.params['digest']
+
+		user = User.new(:token=>token, :digest=>digest, :created_at=>Time.now)
+		begin
+			if user.save!
+				{"Success"=>user.id}.to_json
+			else 
+				{"Failed"=>"Cannot create user"}.to_json
+			end
+		rescue => e
+			if e.class== IntegrityError
+				{"Failed"=>"User already existed"}.to_json
+			end
+		end
+
 	end
 
 	put '/upload' do
