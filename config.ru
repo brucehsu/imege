@@ -56,14 +56,18 @@ class Tank
 		valid_secret = digest.hexdigest
 
 		'Error' unless valid_secret == client_secret
+		file_content = upload_file[:tempfile].read
 		digest = Digest::SHA2.new
 
-		filename = "#{digest.update(Time.now.to_i.to_s)}#{@@img_content_suffix[upload_file[:type]]}"
+		filename = "#{digest.update(file_content)}#{@@img_content_suffix[upload_file[:type]]}"
+		filepath = File.join('img',filename)
 		Dir.mkdir 'img' unless Dir.exists? 'img'
-		output = File.new(File.join('img',filename),'w')
-		output.write(upload_file[:tempfile].read)
-		output.flush
-		output.close
+		unless File.exists?(filepath)
+			output = File.new(filepath,'w')
+			output.write(file_content)
+			output.flush
+			output.close
+		end
 
 		filename.to_json
 	end

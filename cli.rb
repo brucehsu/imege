@@ -74,5 +74,5 @@ ARGV.length.times do |i|
         :token=>config[:token],
         :secret=>secret},{},{})
 
-    puts "#{config[:site]}/img/#{remote_filename}"
+    puts "#{IMEGE_SERVER_URL}/img/#{remote_filename}"
 end
