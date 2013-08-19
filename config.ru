@@ -12,18 +12,6 @@ class Tank
 	@@img_content_type = {'.jpg'=>'image/jpeg', '.png'=>'image/png'}
 	@@img_content_suffix = @@img_content_type.invert
 
-	get %r{\/img\/(.+)$} do |match|
-
-		filename = match[0][1..-1]
-		unless File.exists? filename
-			status 404 
-			'Not found'
-		else
-			headers 'Content-Type'=>@@img_content_type[File.extname(filename)]
-			File.read(filename)
-		end
-	end
-
 	post '/register' do
 		token = request.params['token']
 		digest = request.params['digest']
@@ -78,4 +66,5 @@ use Rack::ContentType, 'application/json'
 use Rack::Chunked
 use Rack::ConditionalGet
 use Rack::ETag
+use Rack::Static, :urls=>['/img'], :header_rules=>[%w(jpg png)]
 run Tank.new
